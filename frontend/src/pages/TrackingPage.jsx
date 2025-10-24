@@ -272,6 +272,9 @@ const TrackingPage = () => {
                     Stop Tracking
                   </Button>
                 )}
+                <p className="text-xs text-muted-foreground text-center">
+                  Note: Allow location access when prompted
+                </p>
               </div>
             </Card>
 
