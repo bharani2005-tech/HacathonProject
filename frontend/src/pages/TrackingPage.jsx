@@ -127,11 +127,13 @@ const TrackingPage = () => {
       return;
     }
 
-    setIsTracking(true);
-    toast.success('Tracking started');
-
-    watchIdRef.current = navigator.geolocation.watchPosition(
+    // First get permission and current position
+    navigator.geolocation.getCurrentPosition(
       (position) => {
+        // Permission granted, start tracking
+        setIsTracking(true);
+        toast.success('Tracking started');
+
         const newLocation = {
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
@@ -142,15 +144,49 @@ const TrackingPage = () => {
         setCurrentLocation(newLocation);
         setLocationHistory((prev) => [...prev, newLocation]);
 
-        // Calculate speed (m/s to km/h)
-        if (position.coords.speed !== null) {
-          setSpeed((position.coords.speed * 3.6).toFixed(2));
-        }
+        // Start watching position
+        watchIdRef.current = navigator.geolocation.watchPosition(
+          (position) => {
+            const updatedLocation = {
+              latitude: position.coords.latitude,
+              longitude: position.coords.longitude,
+              accuracy: position.coords.accuracy,
+              timestamp: new Date().toISOString(),
+            };
+
+            setCurrentLocation(updatedLocation);
+            setLocationHistory((prev) => [...prev, updatedLocation]);
+
+            // Calculate speed (m/s to km/h)
+            if (position.coords.speed !== null) {
+              setSpeed((position.coords.speed * 3.6).toFixed(2));
+            }
+          },
+          (error) => {
+            console.error('Geolocation error:', error);
+            toast.error('Location update failed: ' + error.message);
+          },
+          {
+            enableHighAccuracy: true,
+            maximumAge: 0,
+            timeout: 5000,
+          }
+        );
       },
       (error) => {
+        // Permission denied or error
         console.error('Geolocation error:', error);
-        toast.error('Failed to get location: ' + error.message);
-        setIsTracking(false);
+        let errorMsg = 'Failed to get location. ';
+        
+        if (error.code === 1) {
+          errorMsg += 'Please allow location access in your browser settings.';
+        } else if (error.code === 2) {
+          errorMsg += 'Location unavailable.';
+        } else if (error.code === 3) {
+          errorMsg += 'Request timeout.';
+        }
+        
+        toast.error(errorMsg);
       },
       {
         enableHighAccuracy: true,
