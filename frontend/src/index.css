@@ -1,50 +1,247 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Azeret+Mono:wght@400;500&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-body {
-    margin: 0;
-    font-family:
-        -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-        "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-        sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-}
-
-code {
-    font-family:
-        source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+/* Design System Tokens */
+:root {
+  /* Cyberpunk Color Palette - HSL Format */
+  --background: 222 47% 4%;           /* Deep dark blue-black #070F34 */
+  --foreground: 180 100% 97%;         /* Near white with cyan tint */
+  
+  --primary: 180 92% 58%;             /* Fluorescent cyan #34EDF3 */
+  --primary-glow: 180 100% 70%;       /* Lighter cyan for glow */
+  --primary-foreground: 222 47% 4%;   /* Dark text on cyan */
+  
+  --secondary: 328 100% 52%;          /* Hollywood Cerise (neon magenta) #F715AB */
+  --secondary-glow: 328 100% 65%;     /* Lighter magenta for glow */
+  --secondary-foreground: 0 0% 100%;  /* White text on magenta */
+  
+  --accent: 278 91% 41%;              /* Dark Violet #9201CB */
+  --accent-glow: 278 91% 55%;         /* Lighter purple for glow */
+  --accent-foreground: 0 0% 100%;     /* White text on purple */
+  
+  --muted: 222 20% 15%;               /* Muted dark blue-grey */
+  --muted-foreground: 180 20% 70%;    /* Muted cyan-grey text */
+  
+  --card: 222 30% 8%;                 /* Slightly lighter than background */
+  --card-foreground: 180 100% 97%;    /* Light text */
+  
+  --border: 180 50% 20%;              /* Cyan-tinted border */
+  --input: 180 40% 15%;               /* Dark input background */
+  --ring: 180 92% 58%;                /* Cyan focus ring */
+  
+  --destructive: 0 100% 50%;          /* Pure red */
+  --destructive-foreground: 0 0% 100%; /* White text */
+  
+  --success: 150 80% 45%;             /* Neon green */
+  --warning: 45 100% 55%;             /* Neon yellow */
+  
+  /* Gradients - using design tokens */
+  --gradient-primary: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--accent)) 100%);
+  --gradient-secondary: linear-gradient(135deg, hsl(var(--secondary)) 0%, hsl(var(--accent)) 100%);
+  --gradient-hero: linear-gradient(180deg, hsl(var(--background)) 0%, hsl(222 40% 8%) 50%, hsl(var(--background)) 100%);
+  --gradient-card: linear-gradient(135deg, hsl(var(--card)) 0%, hsl(222 30% 10%) 100%);
+  
+  /* Shadows with neon glow */
+  --shadow-glow-cyan: 0 0 30px hsl(var(--primary) / 0.5), 0 0 60px hsl(var(--primary) / 0.3);
+  --shadow-glow-magenta: 0 0 30px hsl(var(--secondary) / 0.5), 0 0 60px hsl(var(--secondary) / 0.3);
+  --shadow-glow-purple: 0 0 30px hsl(var(--accent) / 0.5), 0 0 60px hsl(var(--accent) / 0.3);
+  --shadow-card: 0 10px 40px hsl(var(--primary) / 0.15), 0 0 20px hsl(var(--accent) / 0.1);
+  
+  /* Animations */
+  --transition-smooth: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-bounce: 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  
+  /* Spacing scale (4px base) */
+  --space-xs: 0.5rem;   /* 8px */
+  --space-sm: 0.75rem;  /* 12px */
+  --space-md: 1rem;     /* 16px */
+  --space-lg: 1.5rem;   /* 24px */
+  --space-xl: 2rem;     /* 32px */
+  --space-2xl: 3rem;    /* 48px */
+  
+  /* Border radius */
+  --radius-sm: 0.5rem;  /* 8px */
+  --radius-md: 0.75rem; /* 12px */
+  --radius-lg: 1rem;    /* 16px */
+  --radius-full: 9999px;
 }
 
 @layer base {
-    [data-debug-wrapper="true"] {
-        display: contents !important;
-    }
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+  
+  code {
+    font-family: 'Azeret Mono', source-code-pro, Menlo, Monaco, Consolas, monospace;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: 600;
+    line-height: 1.2;
+  }
+  
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: hsl(var(--background));
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--primary) / 0.5);
+    border-radius: var(--radius-full);
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--primary) / 0.7);
+  }
 
-    [data-debug-wrapper="true"] > * {
-        margin-left: inherit;
-        margin-right: inherit;
-        margin-top: inherit;
-        margin-bottom: inherit;
-        padding-left: inherit;
-        padding-right: inherit;
-        padding-top: inherit;
-        padding-bottom: inherit;
-        column-gap: inherit;
-        row-gap: inherit;
-        gap: inherit;
-        border-left-width: inherit;
-        border-right-width: inherit;
-        border-top-width: inherit;
-        border-bottom-width: inherit;
-        border-left-style: inherit;
-        border-right-style: inherit;
-        border-top-style: inherit;
-        border-bottom-style: inherit;
-        border-left-color: inherit;
-        border-right-color: inherit;
-        border-top-color: inherit;
-        border-bottom-color: inherit;
+  [data-debug-wrapper="true"] {
+    display: contents !important;
+  }
+
+  [data-debug-wrapper="true"] > * {
+    margin-left: inherit;
+    margin-right: inherit;
+    margin-top: inherit;
+    margin-bottom: inherit;
+    padding-left: inherit;
+    padding-right: inherit;
+    padding-top: inherit;
+    padding-bottom: inherit;
+    column-gap: inherit;
+    row-gap: inherit;
+    gap: inherit;
+    border-left-width: inherit;
+    border-right-width: inherit;
+    border-top-width: inherit;
+    border-bottom-width: inherit;
+    border-left-style: inherit;
+    border-right-style: inherit;
+    border-top-style: inherit;
+    border-bottom-style: inherit;
+    border-left-color: inherit;
+    border-right-color: inherit;
+    border-top-color: inherit;
+    border-bottom-color: inherit;
+  }
+}
+
+@layer components {
+  /* Neon glow animation */
+  @keyframes neon-pulse {
+    0%, 100% {
+      filter: drop-shadow(0 0 5px hsl(var(--primary))) 
+              drop-shadow(0 0 15px hsl(var(--primary) / 0.5));
     }
+    50% {
+      filter: drop-shadow(0 0 10px hsl(var(--primary))) 
+              drop-shadow(0 0 25px hsl(var(--primary) / 0.7));
+    }
+  }
+  
+  .neon-text {
+    text-shadow: 0 0 10px hsl(var(--primary)),
+                 0 0 20px hsl(var(--primary) / 0.8),
+                 0 0 30px hsl(var(--primary) / 0.6);
+  }
+  
+  .neon-border {
+    border: 1px solid hsl(var(--primary) / 0.5);
+    box-shadow: 0 0 10px hsl(var(--primary) / 0.3),
+                inset 0 0 10px hsl(var(--primary) / 0.1);
+  }
+  
+  /* Float animation */
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-20px);
+    }
+  }
+  
+  .float-animation {
+    animation: float 3s ease-in-out infinite;
+  }
+  
+  /* Spin animation */
+  @keyframes spin-slow {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  
+  .spin-slow {
+    animation: spin-slow 10s linear infinite;
+  }
+  
+  /* Fade in animation */
+  @keyframes fade-in-up {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .fade-in-up {
+    animation: fade-in-up 0.6s ease-out;
+  }
+  
+  /* Gradient text */
+  .gradient-text {
+    background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--secondary)));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+}
+
+@layer utilities {
+  /* Glass morphism effect */
+  .glass {
+    background: hsl(var(--card) / 0.5);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid hsl(var(--border) / 0.3);
+  }
+  
+  /* Glow effects */
+  .glow-cyan {
+    box-shadow: var(--shadow-glow-cyan);
+  }
+  
+  .glow-magenta {
+    box-shadow: var(--shadow-glow-magenta);
+  }
+  
+  .glow-purple {
+    box-shadow: var(--shadow-glow-purple);
+  }
 }
