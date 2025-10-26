@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/HacathonProject/static/css/main.f1981f4a.css",
+    "main.js": "/HacathonProject/static/js/main.b0759496.js",
+    "index.html": "/HacathonProject/index.html",
+    "main.f1981f4a.css.map": "/HacathonProject/static/css/main.f1981f4a.css.map",
+    "main.b0759496.js.map": "/HacathonProject/static/js/main.b0759496.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.f1981f4a.css",
+    "static/js/main.b0759496.js"
+  ]
+}
