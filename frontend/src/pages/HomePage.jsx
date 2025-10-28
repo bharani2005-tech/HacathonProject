@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as THREE from 'three';
@@ -120,7 +121,7 @@ const HomePage = () => {
         <nav className="container mx-auto px-4 py-6 flex justify-between items-center">
           <div className="flex items-center space-x-2">
             <MapPin className="w-8 h-8 text-primary" />
-            <h1 className="text-2xl font-bold gradient-text">Live Tracker 3D</h1>
+            <h1 className="text-2xl font-bold gradient-text">TRACK BUDDY</h1>
           </div>
           <Button
             onClick={() => navigate('/auth')}
