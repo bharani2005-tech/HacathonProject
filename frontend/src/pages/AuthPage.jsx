@@ -7,7 +7,8 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { toast } from 'sonner';
 
-const API_URL = process.env.REACT_APP_BACKEND_URL || "https://ua9zkv.vercel.app"; // ✅ Correct backend URL
+// ✅ Ensure your backend URL ends with NO extra slash
+const API_URL = process.env.REACT_APP_BACKEND_URL || "https://ua9zkv.vercel.app";
 
 const AuthPage = () => {
   const navigate = useNavigate();
@@ -25,7 +26,6 @@ const AuthPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // ✅ Basic validation
     if (
       (isLogin && (!formData.email || !formData.password)) ||
       (!isLogin && (!formData.name || !formData.email || !formData.password))
@@ -35,51 +35,49 @@ const AuthPage = () => {
     }
 
     try {
+      // ✅ Send only one key expected by backend (client_name)
       const payload = { client_name: isLogin ? formData.email : formData.name };
-      const res = await fetch(`${API_URL}/api/status`, {   // ✅ Correct endpoint
+
+      const res = await fetch(`${API_URL}/api/status`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
 
-      // ✅ Handle success or error responses safely
-      const data = await res.json().catch(() => null);
-      if (res.ok && data) {
-        localStorage.setItem("user", JSON.stringify(data));
-        toast.success(isLogin ? "Login successful! Redirecting..." : "Account created! Redirecting...");
-        setTimeout(() => navigate("/tracking"), 1000);
-      } else {
-        toast.error(data?.error || "Something went wrong!");
+      // ✅ Handle errors gracefully
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error(`Server ${res.status}: ${text || "Error"}`);
       }
+
+      // ✅ Parse JSON only once (fixes "Response body used" bug)
+      const data = await res.json();
+
+      // ✅ Store locally and redirect
+      localStorage.setItem("user", JSON.stringify(data));
+      toast.success(isLogin ? "Login successful!" : "Account created!");
+
+      setTimeout(() => navigate("/tracking"), 1000);
     } catch (err) {
-      console.error(err);
-      toast.error("Server error. Try again later.");
+      console.error("❌ Error:", err);
+      toast.error(err.message || "Server error. Please try again later.");
     }
   };
 
   const handleGuestAccess = () => {
     localStorage.setItem("user", JSON.stringify({ email: "guest@tracker.com", isGuest: true }));
     toast.success("Continuing as guest...");
-    setTimeout(() => navigate("/tracking"), 500);
+    setTimeout(() => navigate("/tracking"), 600);
   };
 
   return (
     <div className="min-h-screen bg-gradient-hero relative overflow-hidden flex items-center justify-center">
-      {/* Background decorations */}
+      {/* Background gradient decorations */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-20 left-10 w-64 h-64 bg-primary/10 rounded-full blur-3xl animate-pulse"></div>
         <div className="absolute bottom-20 right-10 w-96 h-96 bg-secondary/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
-        <div
-          className="absolute inset-0 opacity-20"
-          style={{
-            backgroundImage: `linear-gradient(hsl(var(--primary) / 0.1) 1px, transparent 1px),
-                              linear-gradient(90deg, hsl(var(--primary) / 0.1) 1px, transparent 1px)`,
-            backgroundSize: '50px 50px',
-          }}
-        ></div>
       </div>
 
-      {/* Auth Card */}
       <div className="relative z-10 w-full max-w-md px-4">
         <Button
           onClick={() => navigate('/')}
@@ -98,11 +96,13 @@ const AuthPage = () => {
             </div>
             <h2 className="text-3xl font-bold mb-2">{isLogin ? 'Welcome Back' : 'Create Account'}</h2>
             <p className="text-muted-foreground">
-              {isLogin ? 'Sign in to access your tracking dashboard' : 'Join us and start tracking locations in 3D'}
+              {isLogin
+                ? 'Sign in to access your tracking dashboard'
+                : 'Join us and start tracking locations in 3D'}
             </p>
           </div>
 
-          {/* Toggle between Login & Signup */}
+          {/* Login / Signup toggle */}
           <div className="flex gap-2 mb-6 p-1 bg-muted/20 rounded-lg">
             <Button
               type="button"
@@ -128,7 +128,7 @@ const AuthPage = () => {
             </Button>
           </div>
 
-          {/* Auth Form */}
+          {/* Auth form */}
           <form onSubmit={handleSubmit} className="space-y-4">
             {!isLogin && (
               <div className="space-y-2">
@@ -142,7 +142,6 @@ const AuthPage = () => {
                   placeholder="John Doe"
                   value={formData.name}
                   onChange={handleInputChange}
-                  className="bg-input border-border/50 focus:border-primary transition-all duration-300 text-foreground placeholder:text-muted-foreground"
                 />
               </div>
             )}
@@ -158,7 +157,6 @@ const AuthPage = () => {
                 placeholder="you@example.com"
                 value={formData.email}
                 onChange={handleInputChange}
-                className="bg-input border-border/50 focus:border-primary transition-all duration-300 text-foreground placeholder:text-muted-foreground"
               />
             </div>
 
@@ -173,7 +171,6 @@ const AuthPage = () => {
                 placeholder="••••••••"
                 value={formData.password}
                 onChange={handleInputChange}
-                className="bg-input border-border/50 focus:border-primary transition-all duration-300 text-foreground placeholder:text-muted-foreground"
               />
             </div>
 
@@ -183,10 +180,7 @@ const AuthPage = () => {
                   <input type="checkbox" className="rounded border-border" />
                   <span className="text-muted-foreground">Remember me</span>
                 </label>
-                <button
-                  type="button"
-                  className="text-primary hover:text-primary/80 transition-colors"
-                >
+                <button type="button" className="text-primary hover:text-primary/80 transition-colors">
                   Forgot password?
                 </button>
               </div>
@@ -194,7 +188,7 @@ const AuthPage = () => {
 
             <Button
               type="submit"
-              className="w-full bg-gradient-primary text-white hover:opacity-90 shadow-glow-cyan transition-all duration-300 hover:scale-105 py-6 text-base"
+              className="w-full bg-gradient-primary text-white hover:opacity-90 shadow-glow-cyan transition-all duration-300 py-6 text-base"
             >
               {isLogin ? 'Sign In' : 'Create Account'}
             </Button>
