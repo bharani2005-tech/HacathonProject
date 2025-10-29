@@ -7,7 +7,7 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { toast } from 'sonner';
 
-const BACKEND_URL = "https://ua9zkv.vercel.app"; // Your deployed backend
+const API_URL = process.env.REACT_APP_BACKEND_URL || "https://ua9zkv.vercel.app";
 
 const AuthPage = () => {
   const navigate = useNavigate();
