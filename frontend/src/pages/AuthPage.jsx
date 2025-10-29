@@ -8,7 +8,7 @@ import { Label } from '../components/ui/label';
 import { toast } from 'sonner';
 
 // ✅ Ensure your backend URL ends with NO extra slash
-const API_URL = process.env.REACT_APP_BACKEND_URL || "https://ua9zkv.vercel.app";
+const API_URL = process.env.REACT_APP_BACKEND_URL || "https://hackaton-1dir.vercel.app/";
 
 const AuthPage = () => {
   const navigate = useNavigate();
